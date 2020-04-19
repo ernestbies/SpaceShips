@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Ship implements Serializable {
-
+    
+    private static final long serialVersionUID = 2L;
     private int type; //type of spaceship
     private String name; //name of the ship
     private List<String> positions = new ArrayList<>(); //ship positions on the board

@@ -1,13 +1,15 @@
 package com.shipsgame.domain.model;
 
 import com.shipsgame.domain.dto.StatusDto;
-
+import com.shipsgame.service.impl.GameDataImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Game implements Serializable {
+    
+    private static final long serialVersionUID = 3L;
     private int steps; //number of steps
     private String user; //username
     private char[] board; //current state of board
@@ -25,29 +27,27 @@ public class Game implements Serializable {
         boardGenerating();
     }
 
-    //function to get game status
+    //method to get game status
     public StatusDto getStatus(){
         return (new StatusDto("LOADGAME", "", 0, steps, new String(board)));
     }
 
-    //function to get number of steps
+    //method to get number of steps
     public int getSteps() {
         return steps;
     }
 
-    //function to get username
+    //method to get username
     public String getUser() {
         return user;
     }
 
-    //function to get current state of board
+    //method to get current state of board
     public char[] getBoard() {
         return board;
     }
 
-
-
-    //function which generates ships on board
+    //method which generates ships on board
     private void boardGenerating(){
         int length, orientation, pozX, pozY, number;
         int xmin, xmax, ymin, ymax;
@@ -230,6 +230,7 @@ public class Game implements Serializable {
         StatusDto status;
 
         if (shipsList.isEmpty()){
+            GameDataImpl.getInstance().setRank(user.substring(0,user.length()-32), steps);
             return new StatusDto("ENDGAME","", 0, steps, new String(board));
         }
 
@@ -252,6 +253,7 @@ public class Game implements Serializable {
                         status = new StatusDto("SHOTDOWN", shipsList.get(m).getName(), shipsList.get(m).getType(), steps, new String(board));
                         shipsList.remove(m);
                         if (shipsList.isEmpty()) {
+                            GameDataImpl.getInstance().setRank(user.substring(0,user.length()-32), steps);
                             status = new StatusDto("ENDGAME","", 0, steps, new String(board));
                         }
                         return status;
@@ -272,6 +274,7 @@ public class Game implements Serializable {
         }
     }
 
+    //method toString()
     @Override
     public String toString() {
         return "Game{" +

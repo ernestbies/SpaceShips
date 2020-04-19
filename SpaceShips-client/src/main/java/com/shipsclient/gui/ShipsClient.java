@@ -130,7 +130,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                 try {
 
                     shot = shotGame(jTextFieldUser.getText() + MD5(Arrays.toString(jPasswordField1.getPassword())), Integer.toString(x) + Integer.toString(y));
-         
+
                     jLabelKroki.setText("" + shot.getSteps());
                     board = shot.getBoard();
 
@@ -283,7 +283,8 @@ public class BoardPanel extends JPanel implements MouseListener {
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jButtonRank = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabelKroki = new javax.swing.JLabel();
@@ -367,13 +368,23 @@ public class BoardPanel extends JPanel implements MouseListener {
         jLabel5.setText("Autorzy: Ernest Bieś, Konrad Czechowski, Dawid Kwaśny");
         jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        jButton1.setBackground(new java.awt.Color(68, 74, 88));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Pokaż/ukryj zasady gry");
-        jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonRank.setBackground(new java.awt.Color(68, 74, 88));
+        jButtonRank.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonRank.setText("Ranking");
+        jButtonRank.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonRank.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonRankActionPerformed(evt);
+            }
+        });
+
+        jButton2.setBackground(new java.awt.Color(68, 74, 88));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setText("Pokaż/ukryj zasady gry");
+        jButton2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -382,25 +393,35 @@ public class BoardPanel extends JPanel implements MouseListener {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(186, 186, 186)
+                .addGap(207, 207, 207)
+                .addComponent(jButtonRank, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))
-                .addContainerGap(252, Short.MAX_VALUE))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE))
+                .addContainerGap(240, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(945, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(jButtonRank, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                    .addContainerGap(16, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(13, 13, 13)))
         );
 
         jPanel3.setBackground(new java.awt.Color(56, 60, 74));
@@ -683,13 +704,11 @@ public class BoardPanel extends JPanel implements MouseListener {
         }
     }//GEN-LAST:event_jButtonGetGameActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(jScrollPane3.isVisible()) {
-            jScrollPane3.setVisible(false);
-        }else{
-            jScrollPane3.setVisible(true);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jButtonRankActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRankActionPerformed
+        String rank = getRank();
+        System.out.println(rank);
+        System.out.println("-----");
+    }//GEN-LAST:event_jButtonRankActionPerformed
 
     private void jTextFieldUserFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldUserFocusLost
         jPasswordField1.requestFocus();
@@ -698,6 +717,10 @@ public class BoardPanel extends JPanel implements MouseListener {
     private void jPanel1ComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanel1ComponentResized
         resizeFunction();
     }//GEN-LAST:event_jPanel1ComponentResized
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     //method to send information to server about creating new game
     private Status newGame(String user) throws RestClientException, HttpClientErrorException {
@@ -718,6 +741,12 @@ public class BoardPanel extends JPanel implements MouseListener {
         RestTemplate restTemplate = new RestTemplate();
         Status status = restTemplate.getForObject("http://localhost:8080/api/shotgame?user=" + user + "&shot=" + shot, Status.class);
         return status;        
+    }
+    
+    private String getRank() throws RestClientException, HttpClientErrorException {
+        RestTemplate restTemplate = new RestTemplate();
+        String rank = restTemplate.getForObject("http://localhost:8080/api/getrank", String.class);
+        return rank;        
     }
     
     //method to MD5 coding passwords
@@ -789,9 +818,10 @@ public class BoardPanel extends JPanel implements MouseListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonGetGame;
     private javax.swing.JButton jButtonNewGame;
+    private javax.swing.JButton jButtonRank;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
