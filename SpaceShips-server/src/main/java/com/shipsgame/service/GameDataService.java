@@ -6,4 +6,5 @@ public interface GameDataService {
     StatusDto getGame(String user);
     StatusDto newGame(String user);
     StatusDto shotGame(String user, String shot);
+    String getRank();
 }
