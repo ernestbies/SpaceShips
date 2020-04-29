@@ -1,20 +1,29 @@
 package com.shipsgame.domain.model;
 
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Ship implements Serializable {
-    
+public class Ship implements Serializable{
+
     private static final long serialVersionUID = 2L;
-    private int type; //type of spaceship
+
     private String name; //name of the ship
-    private List<String> positions = new ArrayList<>(); //ship positions on the board
+    private int type; //type of spaceship
+    private List<String> positions; //ship positions on the board
 
     //constructor
     public Ship(String name, int type) {
         this.type = type;
         this.name = name;
+        this.positions = new ArrayList<>();
+    }
+
+    public Ship(String name, int type, List<String> positions) {
+        this.name = name;
+        this.type = type;
+        this.positions = positions;
     }
 
     //function to get the type

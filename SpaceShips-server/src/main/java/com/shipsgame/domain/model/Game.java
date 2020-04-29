@@ -1,22 +1,28 @@
 package com.shipsgame.domain.model;
 
 import com.shipsgame.domain.dto.StatusDto;
-import com.shipsgame.service.impl.GameDataImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Game implements Serializable {
-    
     private static final long serialVersionUID = 3L;
+
     private int steps; //number of steps
     private String user; //username
     private char[] board; //current state of board
     private List<Ship> shipsList; //list of user's ships
     private int[][] boardNumbers; //number of fields occupied by ships around the selected position
 
-    //constructor
+    public Game(String user, int steps, char[] board, List<Ship> shipsList, int[][] boardNumbers) {
+        this.steps = steps;
+        this.user = user;
+        this.board = board;
+        this.shipsList = shipsList;
+        this.boardNumbers = boardNumbers;
+    }
+
     public Game(String user) {
         this.user = user;
         this.steps = 0;
@@ -25,6 +31,26 @@ public class Game implements Serializable {
         this.boardNumbers = new int[9][9];
 
         boardGenerating();
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setBoard(char[] board) {
+        this.board = board;
+    }
+
+    public void setShipsList(List<Ship> shipsList) {
+        this.shipsList = shipsList;
+    }
+
+    public void setBoardNumbers(int[][] boardNumbers) {
+        this.boardNumbers = boardNumbers;
     }
 
     //method to get game status
@@ -45,6 +71,14 @@ public class Game implements Serializable {
     //method to get current state of board
     public char[] getBoard() {
         return board;
+    }
+
+    public int[][] getBoardNumbers() {
+        return boardNumbers;
+    }
+
+    public List<Ship> getShipsList() {
+        return shipsList;
     }
 
     //method which generates ships on board
@@ -230,7 +264,6 @@ public class Game implements Serializable {
         StatusDto status;
 
         if (shipsList.isEmpty()){
-            GameDataImpl.getInstance().setRank(user.substring(0,user.length()-32), steps);
             return new StatusDto("ENDGAME","", 0, steps, new String(board));
         }
 
@@ -253,7 +286,6 @@ public class Game implements Serializable {
                         status = new StatusDto("SHOTDOWN", shipsList.get(m).getName(), shipsList.get(m).getType(), steps, new String(board));
                         shipsList.remove(m);
                         if (shipsList.isEmpty()) {
-                            GameDataImpl.getInstance().setRank(user.substring(0,user.length()-32), steps);
                             status = new StatusDto("ENDGAME","", 0, steps, new String(board));
                         }
                         return status;
@@ -274,7 +306,6 @@ public class Game implements Serializable {
         }
     }
 
-    //method toString()
     @Override
     public String toString() {
         return "Game{" +
