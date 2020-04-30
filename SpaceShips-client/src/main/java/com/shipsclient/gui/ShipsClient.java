@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -39,7 +37,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -66,6 +63,8 @@ public class ShipsClient extends javax.swing.JFrame {
         jTextFieldUser.requestFocus();
         loggedIn = false;
         username = "";
+        jButtonNewGame.setEnabled(false);
+        jButtonGetGame.setEnabled(false);
     }
 
     
@@ -475,9 +474,7 @@ public class BoardPanel extends JPanel implements MouseListener {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jPanel5.setBackground(new java.awt.Color(56, 60, 74));
@@ -596,7 +593,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -658,10 +655,10 @@ public class BoardPanel extends JPanel implements MouseListener {
                 board = status.getBoard();
 
                 jPanel6.repaint();
-                jButtonGetGame.setEnabled(false);
-                jButtonNewGame.setEnabled(false);
-                jTextFieldUser.setEnabled(false);
-                jPasswordField1.setEnabled(false);
+//                jButtonGetGame.setEnabled(false);
+//                jButtonNewGame.setEnabled(false);
+//                jTextFieldUser.setEnabled(false);
+//                jPasswordField1.setEnabled(false);
             } catch (HttpClientErrorException ex) {
                 JOptionPane.showMessageDialog(null, "UWAGA! Niepoprawne zapytanie do serwera!");
             } catch (RestClientException e) {
@@ -696,10 +693,10 @@ public class BoardPanel extends JPanel implements MouseListener {
                         jLabelKroki.setText("" + status.getSteps());
                         board = status.getBoard();
 
-                        jButtonGetGame.setEnabled(false);
-                        jButtonNewGame.setEnabled(false);
-                        jTextFieldUser.setEnabled(false);
-                        jPasswordField1.setEnabled(false);
+//                        jButtonGetGame.setEnabled(false);
+//                        jButtonNewGame.setEnabled(false);
+//                        jTextFieldUser.setEnabled(false);
+//                        jPasswordField1.setEnabled(false);
                         jPanel6.repaint();
                     }
                 } catch (BadLocationException ex) {
@@ -752,12 +749,28 @@ public class BoardPanel extends JPanel implements MouseListener {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(logIn(jTextFieldUser.getText(), jPasswordField1.getText())) {
+        
+        if(loggedIn) {
+            username = "";
+            loggedIn = false;
+            jButton1.setText("login");
+            jTextFieldUser.setText("");
+            jPasswordField1.setText("");
+            jButtonNewGame.setEnabled(false);
+            jButtonGetGame.setEnabled(false);
+            jTextFieldUser.setEnabled(true);
+            jPasswordField1.setEnabled(true);
+        }
+        else if(!loggedIn && logIn(jTextFieldUser.getText(), jPasswordField1.getText())) {
             loggedIn = true;
             username = jTextFieldUser.getText();
+            jButton1.setText("logout");
+            jButtonNewGame.setEnabled(true);
+            jButtonGetGame.setEnabled(true);
+            jTextFieldUser.setEnabled(false);
+            jPasswordField1.setEnabled(false);
         } else {
-            loggedIn = false;
-            username = "";
+            JOptionPane.showMessageDialog(null, "Podaj prawidłowe hasło");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

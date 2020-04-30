@@ -29,7 +29,7 @@ public class GameController {
     @RequestMapping(value = "/getgame/{user}", method = RequestMethod.GET)
     public ResponseEntity<StatusDto> getUserGame(@PathVariable String user) {
         final StatusDto statusDto = gameService.getGame(user);
-        return (statusDto.getCode().equals("NOGAME")) ? new ResponseEntity<>(statusDto, HttpStatus.NOT_FOUND) : new ResponseEntity<>(statusDto, HttpStatus.OK);
+        return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
     @CrossOrigin
@@ -59,10 +59,9 @@ public class GameController {
     @CrossOrigin
     @RequestMapping(value = "/login/{user}/{pass}", method = RequestMethod.GET)
     public ResponseEntity<Boolean> setLogin(@PathVariable String user, @PathVariable String pass) {
-        if(gameService.loginPlayer(user,pass)) {
-            return new ResponseEntity<>(true,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(false,HttpStatus.FORBIDDEN);
+        boolean status = gameService.loginPlayer(user,pass);
+
+        return new ResponseEntity<>(status,HttpStatus.OK);
     }
 
 }
