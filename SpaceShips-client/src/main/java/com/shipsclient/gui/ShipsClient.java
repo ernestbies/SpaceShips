@@ -47,8 +47,8 @@ public class ShipsClient extends javax.swing.JFrame {
     public int size; //size of one cell on board
     public String board; //variable that stores the state of the board
     public boolean gamestatus; //true - game is created or loaded
-    private boolean loggedIn;
-    private String username;
+    private boolean loggedIn; //true - player is logged in
+    private String username; // logged in player name
     
     //constructor
     public ShipsClient() {
@@ -155,7 +155,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                             StyleConstants.setForeground(style, Color.yellow);
                             text.insertString(text.getLength(), username + ": ", style);
                             StyleConstants.setForeground(style, Color.ORANGE);
-                            text.insertString(text.getLength(), "Pudło!! \n", style);
+                            text.insertString(text.getLength(), "Pudło! \n", style);
                             sound("miss.wav");
                             break;
                         case "ENDGAME":
@@ -164,30 +164,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                             StyleConstants.setForeground(style, Color.GREEN);
                             text.insertString(text.getLength(), "KONIEC GRY!!! po " + shot.getSteps() + " krokach \n", style);
                             sound("endgame.wav");
-                            int option = JOptionPane.showConfirmDialog(null,
-                                    "KONIEC GRY!!! po " + shot.getSteps() + " krokach! \n"
-                                    + "Zakończyć grę?",
-                                    "Komunikat",
-                                    JOptionPane.YES_NO_OPTION);
-
-                            if (option == 0) {
-                                System.exit(0);
-                            } else {
-                                jButtonGetGame.setEnabled(true);
-                                jButtonNewGame.setEnabled(true);
-                                jTextFieldUser.setEnabled(true);
-                                jPasswordField1.setEnabled(true);
-                                jTextFieldUser.setText("");
-                                jPasswordField1.setText("");
-                                board = "";
-                                for (int i = 0; i < 81; i++) {
-                                    board += " ";
-                                }
-                                jPanel6.repaint();
-                                gamestatus = false;
-                                JOptionPane.showMessageDialog(null, "Możesz rozpocząć nową grę.");
-                            }
-
+                            JOptionPane.showMessageDialog(null,"KONIEC GRY!!!\nPo " + shot.getSteps() + " krokach!");
                             break;
                         case "SHOTDOWN":
                             StyleConstants.setForeground(style, Color.yellow);
@@ -604,39 +581,12 @@ public class BoardPanel extends JPanel implements MouseListener {
     private void jButtonNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewGameActionPerformed
         Status status;
         if (!loggedIn) {
-            JOptionPane.showMessageDialog(null, "Wprowadź poprawną nazwę użytkownika i hasło!");
+            JOptionPane.showMessageDialog(null, "Zaloguj się!");
         } else {
             try {
 
                 StyledDocument text = jTextPane1.getStyledDocument();
                 Style style = jTextPane1.addStyle("Style", null);
-
-//                status = getGame(username);
-//
-//                if (!"NOGAME".equals(status.getCode())) {
-//                    int option = JOptionPane.showConfirmDialog(null,
-//                            "Na serwerze znajduje się gra użytkownika '" + username + "'\n"
-//                            + "która zostanie wczytana lub usunięta.\n"
-//                            + "Czy chcesz usunąć grę?",
-//                            "Komunikat",
-//                            JOptionPane.YES_NO_OPTION);
-//
-//                    try {
-//                        StyleConstants.setForeground(style, Color.yellow);
-//                        text.insertString(text.getLength(), username, style);
-//                        StyleConstants.setForeground(style, Color.CYAN);
-//
-//                        if (option == 0) {
-//                            status = newGame(username);
-//                            text.insertString(text.getLength(), ": utworzona nowa gra użytkownika  \n", style);                      
-//                        } else {
-//                            text.insertString(text.getLength(), ": wczytano grę użytkownika  \n", style);
-//                        }
-//                        sound("newloadgame.wav");
-//                        gamestatus = true;
-//                    } catch (BadLocationException ex) {
-//                        Logger.getLogger(ShipsClient.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
                 status = newGame(username);
                 try {
                     StyleConstants.setForeground(style, Color.yellow);
@@ -644,7 +594,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                     StyleConstants.setForeground(style, Color.CYAN);
 
                     
-                    text.insertString(text.getLength(), ": utworzona nowa gra użytkownika  \n", style);
+                    text.insertString(text.getLength(), ": utworzono nowa gre użytkownika  \n", style);
                     sound("newloadgame.wav");
                     gamestatus = true;
                 } catch (BadLocationException ex) {
@@ -655,10 +605,6 @@ public class BoardPanel extends JPanel implements MouseListener {
                 board = status.getBoard();
 
                 jPanel6.repaint();
-//                jButtonGetGame.setEnabled(false);
-//                jButtonNewGame.setEnabled(false);
-//                jTextFieldUser.setEnabled(false);
-//                jPasswordField1.setEnabled(false);
             } catch (HttpClientErrorException ex) {
                 JOptionPane.showMessageDialog(null, "UWAGA! Niepoprawne zapytanie do serwera!");
             } catch (RestClientException e) {
@@ -692,11 +638,6 @@ public class BoardPanel extends JPanel implements MouseListener {
                         gamestatus = true;
                         jLabelKroki.setText("" + status.getSteps());
                         board = status.getBoard();
-
-//                        jButtonGetGame.setEnabled(false);
-//                        jButtonNewGame.setEnabled(false);
-//                        jTextFieldUser.setEnabled(false);
-//                        jPasswordField1.setEnabled(false);
                         jPanel6.repaint();
                     }
                 } catch (BadLocationException ex) {
@@ -712,12 +653,13 @@ public class BoardPanel extends JPanel implements MouseListener {
     }//GEN-LAST:event_jButtonGetGameActionPerformed
 
     private void jButtonRankActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRankActionPerformed
-        if(getRank()==null || getRank().isEmpty()) {
+        String rank = getRank();
+        if(rank==null || rank.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Brak wyników na serwerze");
         } else {
             final int columnCount = 2;
             final int rowCount = 10;
-            String[] ranks = getRank().split("\n");
+            String[] ranks = rank.split("\n");
             String[] columnNames = {"Player","Score"};
         
             Object[][] data = new Object[rowCount][columnCount];
@@ -755,20 +697,29 @@ public class BoardPanel extends JPanel implements MouseListener {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
         if(loggedIn) {
+            //logout
             username = "";
             loggedIn = false;
-            jButton1.setText("login");
+            jButton1.setText("Login");
             jTextFieldUser.setText("");
             jPasswordField1.setText("");
             jButtonNewGame.setEnabled(false);
             jButtonGetGame.setEnabled(false);
             jTextFieldUser.setEnabled(true);
             jPasswordField1.setEnabled(true);
+            //clearing game components
+            jLabelKroki.setText("");
+            board = "";
+            for (int i =0;i<81;i++) {
+                board+=" ";
+            }
+            jPanel6.repaint();
         }
-        else if(!loggedIn && logIn(jTextFieldUser.getText(), jPasswordField1.getText())) {
+        else if(!loggedIn && logIn(jTextFieldUser.getText(), MD5(jPasswordField1.getText()))) {
+            //login
             loggedIn = true;
             username = jTextFieldUser.getText();
-            jButton1.setText("logout");
+            jButton1.setText("Logout");
             jButtonNewGame.setEnabled(true);
             jButtonGetGame.setEnabled(true);
             jTextFieldUser.setEnabled(false);
@@ -873,21 +824,20 @@ public class BoardPanel extends JPanel implements MouseListener {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+//        try {
+//            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (Exception e) {
+//            // If Nimbus is not available, you can set the GUI to another look and feel.
+//        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new ShipsClient().setVisible(true);
         });
-         
-        try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            // If Nimbus is not available, you can set the GUI to another look and feel.
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
