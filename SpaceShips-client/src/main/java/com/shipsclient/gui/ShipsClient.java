@@ -674,7 +674,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                     return String.class;
                 }
             };
-        
+            
             Ranking ranking = new Ranking(model);
             ranking.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             ranking.setVisible(true);
