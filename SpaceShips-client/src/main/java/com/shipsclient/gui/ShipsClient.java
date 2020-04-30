@@ -712,28 +712,32 @@ public class BoardPanel extends JPanel implements MouseListener {
     }//GEN-LAST:event_jButtonGetGameActionPerformed
 
     private void jButtonRankActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRankActionPerformed
+        if(getRank()==null || getRank().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Brak wyników na serwerze");
+        } else {
+            final int columnCount = 2;
+            final int rowCount = 10;
+            String[] ranks = getRank().split("\n");
+            String[] columnNames = {"Player","Score"};
         
-        final int columnCount = 2;
-        final int rowCount = 10;
-        String[] ranks = getRank().split("\n");
-        String[] columnNames = {"Player","Score"};
+            Object[][] data = new Object[rowCount][columnCount];
+            for(int i=0; i<ranks.length; i++) {
+                data[i][0] = ranks[i].split(" ")[0];
+                data[i][1] = ranks[i].split(" ")[1];
+            }
         
-        Object[][] data = new Object[rowCount][columnCount];
-        for(int i=0; i<ranks.length; i++) {
-            data[i][0] = ranks[i].split(" ")[0];
-            data[i][1] = ranks[i].split(" ")[1];
+            DefaultTableModel model = new DefaultTableModel(data, columnNames)
+            {
+                public Class<?> getColumnClass(int column){
+                    return String.class;
+                }
+            };
+        
+            Ranking ranking = new Ranking(model);
+            ranking.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            ranking.setVisible(true);
         }
         
-        DefaultTableModel model = new DefaultTableModel(data, columnNames)
-        {
-            public Class<?> getColumnClass(int column){
-                return String.class;
-            }
-        };
-        
-        Ranking ranking = new Ranking(model);
-        ranking.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        ranking.setVisible(true);
     }//GEN-LAST:event_jButtonRankActionPerformed
 
     private void jTextFieldUserFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldUserFocusLost
