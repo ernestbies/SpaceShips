@@ -1,13 +1,11 @@
 package com.shipsgame.domain.model;
 
 import com.shipsgame.domain.dto.StatusDto;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Game implements Serializable {
-    private static final long serialVersionUID = 3L;
+public class Game {
 
     private int steps; //number of steps
     private String user; //username

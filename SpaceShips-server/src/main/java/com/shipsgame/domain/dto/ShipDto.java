@@ -1,14 +1,9 @@
-package com.shipsgame.domain.entity;
+package com.shipsgame.domain.dto;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
-public class Ships implements Serializable {
-    private static final long serialVersionUID = 300L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ShipDto implements Serializable {
+    private static final long serialVersionUID = 100L;
 
     private Integer type;
 
@@ -16,16 +11,10 @@ public class Ships implements Serializable {
 
     private String[] positions;
 
-    public Ships() {
+    public ShipDto() {
     }
 
-    public Ships(String name, Integer type, String[] positions) {
-        this.type = type;
-        this.name = name;
-        this.positions = positions;
-    }
-
-    public Ships(Builder builder) {
+    public ShipDto(Builder builder) {
         this.name = builder.name;
         this.type = builder.type;
         this.positions = builder.positions;
@@ -66,9 +55,10 @@ public class Ships implements Serializable {
             return this;
         }
 
-        public Ships build() {
-            return new Ships(this);
+        public ShipDto build() {
+            return new ShipDto(this);
         }
 
     }
 }
+

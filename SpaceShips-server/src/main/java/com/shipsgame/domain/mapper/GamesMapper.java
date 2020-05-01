@@ -1,8 +1,8 @@
 package com.shipsgame.domain.mapper;
 
 import com.shipsgame.domain.converter.Converter;
+import com.shipsgame.domain.dto.ShipDto;
 import com.shipsgame.domain.entity.Games;
-import com.shipsgame.domain.entity.Ships;
 import com.shipsgame.domain.model.Game;
 import com.shipsgame.domain.model.Ship;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ public class GamesMapper implements Converter<Game, Games> {
     @Override
     public Games convert(Game from) {
         List<Ship> fromShipsList = from.getShipsList();
-        Ships[] ships = new Ships[fromShipsList.size()];
+        ShipDto[] ships = new ShipDto[fromShipsList.size()];
         int i=0;
         for(Ship s : fromShipsList) {
             List<String> pos = s.getPositions();
@@ -22,7 +22,7 @@ public class GamesMapper implements Converter<Game, Games> {
             for(int j=0; j<pos.size(); j++) {
                 positions[j] = pos.get(j);
             }
-            ships[i++] = new Ships.Builder()
+            ships[i++] = new ShipDto.Builder()
                     .type(s.getType())
                     .name(s.getName())
                     .positions(positions)

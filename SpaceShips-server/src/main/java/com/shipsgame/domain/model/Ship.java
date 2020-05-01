@@ -1,13 +1,9 @@
 package com.shipsgame.domain.model;
 
-import javax.persistence.Embeddable;
-import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Ship implements Serializable{
-
-    private static final long serialVersionUID = 2L;
+public class Ship {
 
     private String name; //name of the ship
     private int type; //type of spaceship

@@ -1,8 +1,8 @@
 package com.shipsgame.domain.mapper;
 
 import com.shipsgame.domain.converter.Converter;
+import com.shipsgame.domain.dto.ShipDto;
 import com.shipsgame.domain.entity.Games;
-import com.shipsgame.domain.entity.Ships;
 import com.shipsgame.domain.model.Game;
 import com.shipsgame.domain.model.Ship;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class GameMapper implements Converter<Games, Game> {
 
     public Game convert(Games from) {
-        Ships[] fromShipsList = from.getShipsList();
+        ShipDto[] fromShipsList = from.getShipsList();
         List<Ship> ships = Arrays.asList(fromShipsList).stream()
                 .map(s -> {
                     String[] pos = s.getPositions();

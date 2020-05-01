@@ -1,12 +1,14 @@
 package com.shipsgame.domain.entity;
 
+import com.shipsgame.domain.dto.ShipDto;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
 public class Games implements Serializable {
-    private static final long serialVersionUID = 200L;
+    private static final long serialVersionUID = 100L;
     @Id
     private String login;
 
@@ -14,7 +16,7 @@ public class Games implements Serializable {
 
     private char[] board;
 
-    private Ships[] shipsList;
+    private ShipDto[] shipsList;
 
     private int[][] boardNumbers;
 
@@ -42,7 +44,7 @@ public class Games implements Serializable {
         return board;
     }
 
-    public Ships[] getShipsList() {
+    public ShipDto[] getShipsList() {
         return shipsList;
     }
 
@@ -54,7 +56,7 @@ public class Games implements Serializable {
         private String login;
         private Integer steps;
         private char[] board;
-        private Ships[] shipsList;
+        private ShipDto[] shipsList;
         private int[][] boardNumbers;
 
         public Builder(){
@@ -75,7 +77,7 @@ public class Games implements Serializable {
             return this;
         }
 
-        public Builder shipsList(Ships[] shipsList) {
+        public Builder shipsList(ShipDto[] shipsList) {
             this.shipsList = shipsList;
             return this;
         }
