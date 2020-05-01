@@ -22,6 +22,7 @@ public class Ranking extends javax.swing.JFrame {
     public Ranking(TableModel model){
         initComponents();
         jTable1.setModel(model);
+        
     }
 
     /**
@@ -40,6 +41,12 @@ public class Ranking extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Scoreboard");
 
+        jPanel1.setBackground(new java.awt.Color(56, 60, 74));
+
+        jScrollPane1.setBackground(new java.awt.Color(56, 60, 74));
+
+        jTable1.setBackground(new java.awt.Color(56, 60, 74));
+        jTable1.setForeground(new java.awt.Color(255, 255, 255));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},

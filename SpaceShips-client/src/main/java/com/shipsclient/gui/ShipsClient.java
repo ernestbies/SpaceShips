@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -39,20 +37,18 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-/**
- *
- * @author Ernest
- */
+
 public class ShipsClient extends javax.swing.JFrame {
     
     public int size; //size of one cell on board
     public String board; //variable that stores the state of the board
     public boolean gamestatus; //true - game is created or loaded
+    private boolean loggedIn; //true - player is logged in
+    private String username; // logged in player name
     
     //constructor
     public ShipsClient() {
@@ -65,6 +61,10 @@ public class ShipsClient extends javax.swing.JFrame {
         gamestatus = false;
         getContentPane().setBackground(new java.awt.Color(56, 60 ,74));
         jTextFieldUser.requestFocus();
+        loggedIn = false;
+        username = "";
+        jButtonNewGame.setEnabled(false);
+        jButtonGetGame.setEnabled(false);
     }
 
     
@@ -132,8 +132,8 @@ public class BoardPanel extends JPanel implements MouseListener {
                 JOptionPane.showMessageDialog(null, "Utwórz lub wczytaj grę użytkownika!");
             } else {
                 try {
-
-                    shot = shotGame(jTextFieldUser.getText() + MD5(Arrays.toString(jPasswordField1.getPassword())), Integer.toString(x) + Integer.toString(y));
+                    //MD5(Arrays.toString(jPasswordField1.getPassword()))
+                    shot = shotGame(username, Integer.toString(x) + Integer.toString(y));
 
                     jLabelKroki.setText("" + shot.getSteps());
                     board = shot.getBoard();
@@ -144,7 +144,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                     switch (shot.getCode()) {
                         case "CHECKED":
                             StyleConstants.setForeground(style, Color.yellow);
-                            text.insertString(text.getLength(), jTextFieldUser.getText() + ": ", style);
+                            text.insertString(text.getLength(), username + ": ", style);
                             StyleConstants.setForeground(style, Color.orange);
                             text.insertString(text.getLength(), (char) (65 + x) + "" + String.valueOf(y + 1), style);
                             StyleConstants.setForeground(style, Color.blue);
@@ -153,52 +153,29 @@ public class BoardPanel extends JPanel implements MouseListener {
                             break;
                         case "MISS":
                             StyleConstants.setForeground(style, Color.yellow);
-                            text.insertString(text.getLength(), jTextFieldUser.getText() + ": ", style);
+                            text.insertString(text.getLength(), username + ": ", style);
                             StyleConstants.setForeground(style, Color.ORANGE);
-                            text.insertString(text.getLength(), "Pudło!! \n", style);
+                            text.insertString(text.getLength(), "Pudło! \n", style);
                             sound("miss.wav");
                             break;
                         case "ENDGAME":
                             StyleConstants.setForeground(style, Color.yellow);
-                            text.insertString(text.getLength(), jTextFieldUser.getText() + ": ", style);
+                            text.insertString(text.getLength(), username + ": ", style);
                             StyleConstants.setForeground(style, Color.GREEN);
                             text.insertString(text.getLength(), "KONIEC GRY!!! po " + shot.getSteps() + " krokach \n", style);
                             sound("endgame.wav");
-                            int option = JOptionPane.showConfirmDialog(null,
-                                    "KONIEC GRY!!! po " + shot.getSteps() + " krokach! \n"
-                                    + "Zakończyć grę?",
-                                    "Komunikat",
-                                    JOptionPane.YES_NO_OPTION);
-
-                            if (option == 0) {
-                                System.exit(0);
-                            } else {
-                                jButtonGetGame.setEnabled(true);
-                                jButtonNewGame.setEnabled(true);
-                                jTextFieldUser.setEnabled(true);
-                                jPasswordField1.setEnabled(true);
-                                jTextFieldUser.setText("");
-                                jPasswordField1.setText("");
-                                board = "";
-                                for (int i = 0; i < 81; i++) {
-                                    board += " ";
-                                }
-                                jPanel6.repaint();
-                                gamestatus = false;
-                                JOptionPane.showMessageDialog(null, "Możesz rozpocząć nową grę.");
-                            }
-
+                            JOptionPane.showMessageDialog(null,"KONIEC GRY!!!\nPo " + shot.getSteps() + " krokach!");
                             break;
                         case "SHOTDOWN":
                             StyleConstants.setForeground(style, Color.yellow);
-                            text.insertString(text.getLength(), jTextFieldUser.getText() + ": ", style);
+                            text.insertString(text.getLength(), username + ": ", style);
                             StyleConstants.setForeground(style, Color.red);
                             text.insertString(text.getLength(), "Z E S T R Z E L O N Y !! " + shot.getShipName() + "(" + shot.getType() + ") \n", style);
                             sound("shotdown.wav");
                             break;
                         case "HIT":
                             StyleConstants.setForeground(style, Color.yellow);
-                            text.insertString(text.getLength(), jTextFieldUser.getText() + ": ", style);
+                            text.insertString(text.getLength(), username + ": ", style);
                             StyleConstants.setForeground(style, Color.PINK);
                             text.insertString(text.getLength(), "TRAFIONY !! " + shot.getShipName() + "(" + shot.getType() + ") \n", style);
                             sound("hit.wav");
@@ -302,6 +279,7 @@ public class BoardPanel extends JPanel implements MouseListener {
         jLabel3 = new javax.swing.JLabel();
         jButtonNewGame = new javax.swing.JButton();
         jButtonGetGame = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Statki kosmiczne 1.0");
@@ -452,7 +430,7 @@ public class BoardPanel extends JPanel implements MouseListener {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addComponent(jLabelKroki, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -473,13 +451,11 @@ public class BoardPanel extends JPanel implements MouseListener {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jPanel5.setBackground(new java.awt.Color(56, 60, 74));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Logowanie do serwera", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Logowanie do serwera", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
         jPanel5.setForeground(new java.awt.Color(255, 255, 255));
         jPanel5.setFocusTraversalPolicyProvider(true);
 
@@ -522,6 +498,15 @@ public class BoardPanel extends JPanel implements MouseListener {
             }
         });
 
+        jButton1.setBackground(new java.awt.Color(68, 74, 88));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Zaloguj");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -533,20 +518,21 @@ public class BoardPanel extends JPanel implements MouseListener {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextFieldUser, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldUser, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonNewGame, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonGetGame, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                    .addComponent(jButton1))
+                .addGap(40, 40, 40)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonGetGame, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                    .addComponent(jButtonNewGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButtonNewGame, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+                .addGap(12, 12, 12)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonNewGame, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextFieldUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -554,9 +540,12 @@ public class BoardPanel extends JPanel implements MouseListener {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
-                    .addComponent(jButtonGetGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButtonGetGame, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -578,12 +567,12 @@ public class BoardPanel extends JPanel implements MouseListener {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -593,66 +582,31 @@ public class BoardPanel extends JPanel implements MouseListener {
     //support to button "NewGame" - sending information to the server about creating a new user game
     private void jButtonNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewGameActionPerformed
         Status status;
-        if (checkName(jTextFieldUser.getText()) || jPasswordField1.getPassword().length==0) {
-            JOptionPane.showMessageDialog(null, "Wprowadź poprawną nazwę użytkownika i hasło!");
+        if (!loggedIn) {
+            JOptionPane.showMessageDialog(null, "Zaloguj się!");
         } else {
             try {
 
                 StyledDocument text = jTextPane1.getStyledDocument();
                 Style style = jTextPane1.addStyle("Style", null);
+                status = newGame(username);
+                try {
+                    StyleConstants.setForeground(style, Color.yellow);
+                    text.insertString(text.getLength(), username, style);
+                    StyleConstants.setForeground(style, Color.CYAN);
 
-                status = getGame(jTextFieldUser.getText() + MD5(Arrays.toString(jPasswordField1.getPassword())));
-
-                if (!"NOGAME".equals(status.getCode())) {
-                    int option = JOptionPane.showConfirmDialog(null,
-                            "Na serwerze znajduje się gra użytkownika '" + jTextFieldUser.getText() + "'\n"
-                            + "która zostanie wczytana lub usunięta.\n"
-                            + "Czy chcesz usunąć grę?",
-                            "Komunikat",
-                            JOptionPane.YES_NO_OPTION);
-
-                    try {
-                        StyleConstants.setForeground(style, Color.yellow);
-                        text.insertString(text.getLength(), jTextFieldUser.getText(), style);
-                        StyleConstants.setForeground(style, Color.CYAN);
-
-                        if (option == 0) {
-                            status = newGame(jTextFieldUser.getText() + MD5(Arrays.toString(jPasswordField1.getPassword())));
-                            text.insertString(text.getLength(), ": utworzona nowa gra użytkownika  \n", style);                      
-                        } else {
-                            text.insertString(text.getLength(), ": wczytano grę użytkownika  \n", style);
-                        }
-                        sound("newloadgame.wav");
-                        gamestatus = true;
-                    } catch (BadLocationException ex) {
-                        Logger.getLogger(ShipsClient.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                } else {
-
-                    try {
-                        StyleConstants.setForeground(style, Color.yellow);
-                        text.insertString(text.getLength(), jTextFieldUser.getText(), style);
-                        StyleConstants.setForeground(style, Color.CYAN);
-
-                        status = newGame(jTextFieldUser.getText() + MD5(Arrays.toString(jPasswordField1.getPassword())));
-                        text.insertString(text.getLength(), ": utworzona nowa gra użytkownika  \n", style);
-                        sound("newloadgame.wav");
-                        gamestatus = true;
-                    } catch (BadLocationException ex) {
-                        Logger.getLogger(ShipsClient.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
+                    
+                    text.insertString(text.getLength(), ": utworzono nowa gre użytkownika  \n", style);
+                    sound("newloadgame.wav");
+                    gamestatus = true;
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(ShipsClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 jLabelKroki.setText("" + status.getSteps());
                 board = status.getBoard();
 
                 jPanel6.repaint();
-                jButtonGetGame.setEnabled(false);
-                jButtonNewGame.setEnabled(false);
-                jTextFieldUser.setEnabled(false);
-                jPasswordField1.setEnabled(false);
             } catch (HttpClientErrorException ex) {
                 JOptionPane.showMessageDialog(null, "UWAGA! Niepoprawne zapytanie do serwera!");
             } catch (RestClientException e) {
@@ -665,17 +619,17 @@ public class BoardPanel extends JPanel implements MouseListener {
     private void jButtonGetGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGetGameActionPerformed
         Status status;
 
-        if (checkName(jTextFieldUser.getText()) || jPasswordField1.getPassword().length==0) {
+        if (!loggedIn) {
             JOptionPane.showMessageDialog(null, "Wprowadź poprawną nazwę użytkownika i hasło!");
         } else {
             try {
-                status = getGame(jTextFieldUser.getText() + MD5(Arrays.toString(jPasswordField1.getPassword())));
+                status = getGame(username);
                 StyledDocument text = jTextPane1.getStyledDocument();
                 Style style = jTextPane1.addStyle("Style", null);
 
                 try {
                     StyleConstants.setForeground(style, Color.yellow);
-                    text.insertString(text.getLength(), jTextFieldUser.getText(), style);
+                    text.insertString(text.getLength(), username, style);
                     StyleConstants.setForeground(style, Color.CYAN);
 
                     if ("NOGAME".equals(status.getCode())) {
@@ -686,11 +640,6 @@ public class BoardPanel extends JPanel implements MouseListener {
                         gamestatus = true;
                         jLabelKroki.setText("" + status.getSteps());
                         board = status.getBoard();
-
-                        jButtonGetGame.setEnabled(false);
-                        jButtonNewGame.setEnabled(false);
-                        jTextFieldUser.setEnabled(false);
-                        jPasswordField1.setEnabled(false);
                         jPanel6.repaint();
                     }
                 } catch (BadLocationException ex) {
@@ -706,28 +655,33 @@ public class BoardPanel extends JPanel implements MouseListener {
     }//GEN-LAST:event_jButtonGetGameActionPerformed
 
     private void jButtonRankActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRankActionPerformed
+        String rank = getRank();
+        if(rank==null || rank.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Brak wyników na serwerze");
+        } else {
+            final int columnCount = 2;
+            final int rowCount = 10;
+            String[] ranks = rank.split("\n");
+            String[] columnNames = {"Player","Score"};
         
-        final int columnCount = 2;
-        final int rowCount = 10;
-        String[] ranks = getRank().split("\n");
-        String[] columnNames = {"Player","Score"};
+            Object[][] data = new Object[rowCount][columnCount];
+            for(int i=0; i<ranks.length; i++) {
+                data[i][0] = ranks[i].split(" ")[0];
+                data[i][1] = ranks[i].split(" ")[1];
+            }
         
-        Object[][] data = new Object[rowCount][columnCount];
-        for(int i=0; i<ranks.length; i++) {
-            data[i][0] = ranks[i].split(" ")[0];
-            data[i][1] = ranks[i].split(" ")[1];
+            DefaultTableModel model = new DefaultTableModel(data, columnNames)
+            {
+                public Class<?> getColumnClass(int column){
+                    return String.class;
+                }
+            };
+            
+            Ranking ranking = new Ranking(model);
+            ranking.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            ranking.setVisible(true);
         }
         
-        DefaultTableModel model = new DefaultTableModel(data, columnNames)
-        {
-            public Class<?> getColumnClass(int column){
-                return String.class;
-            }
-        };
-        
-        Ranking ranking = new Ranking(model);
-        ranking.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        ranking.setVisible(true);
     }//GEN-LAST:event_jButtonRankActionPerformed
 
     private void jTextFieldUserFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldUserFocusLost
@@ -742,6 +696,47 @@ public class BoardPanel extends JPanel implements MouseListener {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        if(loggedIn) {
+            //logout
+            username = "";
+            loggedIn = false;
+            jButton1.setText("Zaloguj");
+            jTextFieldUser.setText("");
+            jPasswordField1.setText("");
+            jButtonNewGame.setEnabled(false);
+            jButtonGetGame.setEnabled(false);
+            jTextFieldUser.setEnabled(true);
+            jPasswordField1.setEnabled(true);
+            //clearing game components
+            jLabelKroki.setText("");
+            board = "";
+            for (int i =0;i<81;i++) {
+                board+=" ";
+            }
+            jPanel6.repaint();
+        }
+        else if(!loggedIn && logIn(jTextFieldUser.getText(), MD5(jPasswordField1.getText()))) {
+            //login
+            loggedIn = true;
+            username = jTextFieldUser.getText();
+            jButton1.setText("Wyloguj");
+            jButtonNewGame.setEnabled(true);
+            jButtonGetGame.setEnabled(true);
+            jTextFieldUser.setEnabled(false);
+            jPasswordField1.setEnabled(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Podaj prawidłowe hasło");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private boolean logIn(String user, String pass) throws RestClientException, HttpClientErrorException {
+        RestTemplate restTemplate = new RestTemplate();
+        boolean status = restTemplate.getForObject("http://localhost:8080/api/login/" + user + "/" + pass, Boolean.class);
+        return status;
+    } 
+    
     //method to send information to server about creating new game
     private Status newGame(String user) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
@@ -831,24 +826,24 @@ public class BoardPanel extends JPanel implements MouseListener {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+//        try {
+//            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (Exception e) {
+//            // If Nimbus is not available, you can set the GUI to another look and feel.
+//        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new ShipsClient().setVisible(true);
         });
-        
-        try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            // If Nimbus is not available, you can set the GUI to another look and feel.
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonGetGame;
     private javax.swing.JButton jButtonNewGame;
