@@ -21,9 +21,7 @@ public class GameMapper implements Converter<Games, Game> {
                 .map(s -> {
                     String[] pos = s.getPositions();
                     List<String> position = new ArrayList<>();
-                    for(int i=0; i<pos.length; i++) {
-                        position.add(pos[i]);
-                    }
+                    position.addAll(Arrays.asList(pos));
                     return new Ship(s.getName(), s.getType(), position);
                 })
                 .collect(Collectors.toList());

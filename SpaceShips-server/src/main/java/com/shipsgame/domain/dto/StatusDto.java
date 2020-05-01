@@ -27,27 +27,22 @@ public class StatusDto {
         this.board = builder.board;
     }
 
-    //function to get number of steps
     public int getSteps() {
         return steps;
     }
 
-    //function to get game code
     public String getCode() {
         return code;
     }
 
-    //function to get ship name
     public String getShipName() {
         return shipName;
     }
 
-    //function to get type of ship
     public int getType() {
         return type;
     }
 
-    //function to get current board status
     public String getBoard() {
         return board;
     }
