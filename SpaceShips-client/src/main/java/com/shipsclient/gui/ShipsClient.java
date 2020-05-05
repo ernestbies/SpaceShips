@@ -717,7 +717,7 @@ public class BoardPanel extends JPanel implements MouseListener {
             }
             jPanel6.repaint();
         }
-        else if(!loggedIn && logIn(jTextFieldUser.getText(), MD5(jPasswordField1.getText()))) {
+        else if(!loggedIn && loginPlayer(jTextFieldUser.getText(), MD5(jPasswordField1.getText()))) {
             //login
             loggedIn = true;
             username = jTextFieldUser.getText();
@@ -731,9 +731,9 @@ public class BoardPanel extends JPanel implements MouseListener {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private boolean logIn(String user, String pass) throws RestClientException, HttpClientErrorException {
+    private boolean loginPlayer(String user, String pass) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
-        boolean status = restTemplate.getForObject("http://localhost:8080/api/login/" + user + "/" + pass, Boolean.class);
+        boolean status = restTemplate.getForObject("http://localhost:8080/api/login?user="+user+"&pass="+pass, Boolean.class);
         return status;
     } 
     
