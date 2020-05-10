@@ -37,6 +37,11 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -733,29 +738,43 @@ public class BoardPanel extends JPanel implements MouseListener {
 
     private boolean loginPlayer(String user, String pass) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
-        boolean status = restTemplate.getForObject("http://localhost:8080/api/login?user="+user+"&pass="+pass, Boolean.class);
-        return status;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("user", user);
+        map.add("pass", pass);
+        return restTemplate.postForObject("http://localhost:8080/api/login", new HttpEntity<>(map, headers), Boolean.class);
     } 
     
     //method to send information to server about creating new game
     private Status newGame(String user) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
-        Status status = restTemplate.getForObject("http://localhost:8080/api/newgame/" + user, Status.class);
-        return status;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("user", user);
+        return restTemplate.postForObject("http://localhost:8080/api/newgame", new HttpEntity<>(map, headers), Status.class);
     }    
 
     //method to send information to server about loading a game
     private Status getGame(String user) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();        
-        Status status = restTemplate.getForObject("http://localhost:8080/api/getgame/" + user, Status.class);
-        return status;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("user", user);
+        return restTemplate.postForObject("http://localhost:8080/api/getgame", new HttpEntity<>(map, headers), Status.class);
     }
     
     //method to send information to server about checking position
     private Status shotGame(String user, String shot) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
-        Status status = restTemplate.getForObject("http://localhost:8080/api/shotgame?user=" + user + "&shot=" + shot, Status.class);
-        return status;        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("user", user);
+        map.add("shot", shot);
+        return restTemplate.postForObject("http://localhost:8080/api/shotgame", new HttpEntity<>(map, headers), Status.class);       
     }
     
     private String getRank() throws RestClientException, HttpClientErrorException {
