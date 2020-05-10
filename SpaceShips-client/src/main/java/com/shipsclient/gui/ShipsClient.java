@@ -54,6 +54,7 @@ public class ShipsClient extends javax.swing.JFrame {
     public boolean gamestatus; //true - game is created or loaded
     private boolean loggedIn; //true - player is logged in
     private String username; // logged in player name
+    private String pass; //logged in player password
     
     //constructor
     public ShipsClient() {
@@ -68,6 +69,7 @@ public class ShipsClient extends javax.swing.JFrame {
         jTextFieldUser.requestFocus();
         loggedIn = false;
         username = "";
+        pass = "";
         jButtonNewGame.setEnabled(false);
         jButtonGetGame.setEnabled(false);
     }
@@ -126,7 +128,7 @@ public class BoardPanel extends JPanel implements MouseListener {
             paintBoard(g2d);
         }
         
-        //support to mouse
+        //support for mouse
         @Override
         public void mouseClicked(MouseEvent e) {
             int x, y;
@@ -138,7 +140,7 @@ public class BoardPanel extends JPanel implements MouseListener {
             } else {
                 try {
                     //MD5(Arrays.toString(jPasswordField1.getPassword()))
-                    shot = shotGame(username, Integer.toString(x) + Integer.toString(y));
+                    shot = shotGame(username, pass, Integer.toString(x) + Integer.toString(y));
 
                     jLabelKroki.setText("" + shot.getSteps());
                     board = shot.getBoard();
@@ -594,7 +596,7 @@ public class BoardPanel extends JPanel implements MouseListener {
 
                 StyledDocument text = jTextPane1.getStyledDocument();
                 Style style = jTextPane1.addStyle("Style", null);
-                status = newGame(username);
+                status = newGame(username, pass);
                 try {
                     StyleConstants.setForeground(style, Color.yellow);
                     text.insertString(text.getLength(), username, style);
@@ -628,7 +630,7 @@ public class BoardPanel extends JPanel implements MouseListener {
             JOptionPane.showMessageDialog(null, "Wprowadź poprawną nazwę użytkownika i hasło!");
         } else {
             try {
-                status = getGame(username);
+                status = getGame(username, pass);
                 StyledDocument text = jTextPane1.getStyledDocument();
                 Style style = jTextPane1.addStyle("Style", null);
 
@@ -706,6 +708,7 @@ public class BoardPanel extends JPanel implements MouseListener {
         if(loggedIn) {
             //logout
             username = "";
+            pass = "";
             loggedIn = false;
             jButton1.setText("Zaloguj");
             jTextFieldUser.setText("");
@@ -722,10 +725,11 @@ public class BoardPanel extends JPanel implements MouseListener {
             }
             jPanel6.repaint();
         }
-        else if(!loggedIn && loginPlayer(jTextFieldUser.getText(), MD5(jPasswordField1.getText()))) {
+        else if(!loggedIn && loginPlayer(jTextFieldUser.getText(), MD5(jTextFieldUser.getText() + ":" + jPasswordField1.getText()))) {
             //login
             loggedIn = true;
             username = jTextFieldUser.getText();
+            pass = MD5(jTextFieldUser.getText() + ":" + jPasswordField1.getText());
             jButton1.setText("Wyloguj");
             jButtonNewGame.setEnabled(true);
             jButtonGetGame.setEnabled(true);
@@ -747,32 +751,35 @@ public class BoardPanel extends JPanel implements MouseListener {
     } 
     
     //method to send information to server about creating new game
-    private Status newGame(String user) throws RestClientException, HttpClientErrorException {
+    private Status newGame(String user, String pass) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("user", user);
+        map.add("pass", pass);
         return restTemplate.postForObject("http://localhost:8080/api/newgame", new HttpEntity<>(map, headers), Status.class);
     }    
 
     //method to send information to server about loading a game
-    private Status getGame(String user) throws RestClientException, HttpClientErrorException {
+    private Status getGame(String user, String pass) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();        
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("user", user);
+        map.add("pass", pass);
         return restTemplate.postForObject("http://localhost:8080/api/getgame", new HttpEntity<>(map, headers), Status.class);
     }
     
     //method to send information to server about checking position
-    private Status shotGame(String user, String shot) throws RestClientException, HttpClientErrorException {
+    private Status shotGame(String user, String pass, String shot) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("user", user);
+        map.add("pass", pass);
         map.add("shot", shot);
         return restTemplate.postForObject("http://localhost:8080/api/shotgame", new HttpEntity<>(map, headers), Status.class);       
     }

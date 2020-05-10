@@ -28,25 +28,25 @@ public class GameController {
 
     @CrossOrigin
     @PostMapping(value = "/getgame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusDto> getUserGame(@RequestParam String user) {
-        final StatusDto statusDto = gameService.getGame(user);
+    public ResponseEntity<StatusDto> getUserGame(@RequestParam String user, @RequestParam String pass) {
+        final StatusDto statusDto = gameService.getGame(user, pass);
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(value = "/newgame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusDto> setNewGame(@RequestParam String user) {
-        final StatusDto statusDto = gameService.newGame(user);
+    public ResponseEntity<StatusDto> setNewGame(@RequestParam String user, @RequestParam String pass) {
+        final StatusDto statusDto = gameService.newGame(user, pass);
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(value = "/shotgame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusDto> setShot(@RequestParam String user, @RequestParam String shot) {
+    public ResponseEntity<StatusDto> setShot(@RequestParam String user, @RequestParam String pass, @RequestParam String shot) {
         if(!shot.matches("\\d\\d")) {
             throw new ErrorOrder("Error order send!");
         }
-        final StatusDto statusDto = gameService.shotGame(user, shot);
+        final StatusDto statusDto = gameService.shotGame(user, pass, shot);
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
