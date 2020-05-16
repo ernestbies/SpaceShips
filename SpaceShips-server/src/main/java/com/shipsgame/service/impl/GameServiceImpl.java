@@ -52,7 +52,10 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public StatusDto newGame(String user) {
+    public StatusDto newGame(String user, String pass) {
+        if(!loginPlayer(user, pass)) {
+            return null;
+        }
         Game newGame = new Game(user);
         gamesRepository.save(gamesMapper.convert(newGame));
         return new StatusDto.Builder()
@@ -65,7 +68,10 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public StatusDto getGame(String user) {
+    public StatusDto getGame(String user, String pass) {
+        if(!loginPlayer(user, pass)) {
+            return null;
+        }
         Optional<Games> optionalGames = gamesRepository.findById(user);
         if(optionalGames.isPresent()) {
             Games games = gamesRepository.findGamesByLogin(user);
@@ -81,7 +87,10 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public StatusDto shotGame(String user, String shot) {
+    public StatusDto shotGame(String user, String pass, String shot) {
+        if(!loginPlayer(user, pass)) {
+            return null;
+        }
         Game game = loadGame(user);
         StatusDto statusDto = game.shot(shot);
         if(statusDto.getCode().equals("ENDGAME")) {

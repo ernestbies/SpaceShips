@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,39 +27,39 @@ public class GameController {
     }
 
     @CrossOrigin
-    @RequestMapping(value = "/getgame/{user}", method = RequestMethod.GET)
-    public ResponseEntity<StatusDto> getUserGame(@PathVariable String user) {
-        final StatusDto statusDto = gameService.getGame(user);
+    @PostMapping(value = "/getgame", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StatusDto> getUserGame(@RequestParam String user, @RequestParam String pass) {
+        final StatusDto statusDto = gameService.getGame(user, pass);
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @RequestMapping(value = "/newgame/{user}", method = RequestMethod.GET)
-    public ResponseEntity<StatusDto> setNewGame(@PathVariable String user) {
-        final StatusDto statusDto = gameService.newGame(user);
+    @PostMapping(value = "/newgame", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StatusDto> setNewGame(@RequestParam String user, @RequestParam String pass) {
+        final StatusDto statusDto = gameService.newGame(user, pass);
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @RequestMapping(value = "/shotgame", method = RequestMethod.GET)
-    public ResponseEntity<StatusDto> setShot(@RequestParam String user, @RequestParam String shot) {
+    @PostMapping(value = "/shotgame", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StatusDto> setShot(@RequestParam String user, @RequestParam String pass, @RequestParam String shot) {
         if(!shot.matches("\\d\\d")) {
             throw new ErrorOrder("Error order send!");
         }
-        final StatusDto statusDto = gameService.shotGame(user, shot);
+        final StatusDto statusDto = gameService.shotGame(user, pass, shot);
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @RequestMapping(value = "/getrank", method = RequestMethod.GET)
+    @GetMapping(value = "/getrank", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getRank() {
         final String rank = gameService.getRank();
         return new ResponseEntity<>(rank, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @RequestMapping(value = "/login/{user}/{pass}", method = RequestMethod.GET)
-    public ResponseEntity<Boolean> setLogin(@PathVariable String user, @PathVariable String pass) {
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> loginPlayer(@RequestParam String user, @RequestParam String pass) {
         boolean status = gameService.loginPlayer(user,pass);
 
         return new ResponseEntity<>(status,HttpStatus.OK);
