@@ -286,7 +286,7 @@ public class BoardPanel extends JPanel implements MouseListener {
         jLabel3 = new javax.swing.JLabel();
         jButtonNewGame = new javax.swing.JButton();
         jButtonGetGame = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jButtonLogin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Statki kosmiczne 1.0");
@@ -504,12 +504,12 @@ public class BoardPanel extends JPanel implements MouseListener {
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(68, 74, 88));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Zaloguj");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonLogin.setBackground(new java.awt.Color(68, 74, 88));
+        jButtonLogin.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonLogin.setText("Zaloguj");
+        jButtonLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonLoginActionPerformed(evt);
             }
         });
 
@@ -526,7 +526,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextFieldUser, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jButtonLogin))
                 .addGap(40, 40, 40)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonGetGame, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
@@ -549,7 +549,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
+                            .addComponent(jButtonLogin)
                             .addComponent(jButtonGetGame, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -702,14 +702,14 @@ public class BoardPanel extends JPanel implements MouseListener {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
         
         if(loggedIn) {
             //logout
             username = "";
             pass = "";
             loggedIn = false;
-            jButton1.setText("Zaloguj");
+            jButtonLogin.setText("Zaloguj");
             jTextFieldUser.setText("");
             jPasswordField1.setText("");
             jButtonNewGame.setEnabled(false);
@@ -729,7 +729,7 @@ public class BoardPanel extends JPanel implements MouseListener {
             loggedIn = true;
             username = jTextFieldUser.getText();
             pass = MD5(jTextFieldUser.getText() + ":" + jPasswordField1.getText());
-            jButton1.setText("Wyloguj");
+            jButtonLogin.setText("Wyloguj");
             jButtonNewGame.setEnabled(true);
             jButtonGetGame.setEnabled(true);
             jTextFieldUser.setEnabled(false);
@@ -737,7 +737,7 @@ public class BoardPanel extends JPanel implements MouseListener {
         } else {
             JOptionPane.showMessageDialog(null, "Podaj prawidłowe hasło");
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonLoginActionPerformed
 
     private boolean loginPlayer(String user, String pass) throws RestClientException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
@@ -868,9 +868,9 @@ public class BoardPanel extends JPanel implements MouseListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonGetGame;
+    private javax.swing.JButton jButtonLogin;
     private javax.swing.JButton jButtonNewGame;
     private javax.swing.JButton jButtonRank;
     private javax.swing.JLabel jLabel1;
