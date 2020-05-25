@@ -1,5 +1,6 @@
 package com.shipsgame.rest;
 
+import com.shipsgame.domain.dto.ErrorOrder;
 import com.shipsgame.domain.dto.StatusDto;
 import com.shipsgame.service.GameService;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class GameController {
             return new ResponseEntity<>("Access denied. Invalid login details." ,HttpStatus.UNAUTHORIZED);
         }
         if(!shot.matches("\\d\\d")) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ErrorOrder("Invalid positions.");
         }
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
