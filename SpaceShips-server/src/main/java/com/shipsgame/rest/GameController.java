@@ -28,28 +28,31 @@ public class GameController {
 
     @CrossOrigin
     @PostMapping(value = "/getgame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusDto> getUserGame(@RequestParam String user, @RequestParam String pass) {
+    public ResponseEntity<?> getUserGame(@RequestParam String user, @RequestParam String pass) {
         final StatusDto statusDto = gameService.getGame(user, pass);
         if(statusDto == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Access denied." ,HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(value = "/newgame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusDto> setNewGame(@RequestParam String user, @RequestParam String pass) {
+    public ResponseEntity<?> setNewGame(@RequestParam String user, @RequestParam String pass) {
         final StatusDto statusDto = gameService.newGame(user, pass);
+        if(statusDto == null) {
+            return new ResponseEntity<>("Access denied. Invalid login details." ,HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(value = "/shotgame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusDto> setShot(@RequestParam String user, @RequestParam String pass, @RequestParam String shot) {
-        if(!shot.matches("\\d\\d")) {
-            throw new ErrorOrder("Error order send!");
-        }
+    public ResponseEntity<?> setShot(@RequestParam String user, @RequestParam String pass, @RequestParam String shot) {
         final StatusDto statusDto = gameService.shotGame(user, pass, shot);
+        if(!shot.matches("\\d\\d")) {
+            return new ResponseEntity<>("Access denied. Invalid login details." ,HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
@@ -57,14 +60,19 @@ public class GameController {
     @GetMapping(value = "/getrank", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getRank() {
         final String rank = gameService.getRank();
+        if(rank == null || rank.isEmpty()) {
+            return new ResponseEntity<>("Ranking not found.", HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(rank, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> loginPlayer(@RequestParam String user, @RequestParam String pass) {
+    public ResponseEntity<?> loginPlayer(@RequestParam String user, @RequestParam String pass) {
         boolean status = gameService.loginPlayer(user,pass);
-
+        if(!status) {
+            return new ResponseEntity<>("Access denied. Invalid login details.", HttpStatus.FORBIDDEN);
+        }
         return new ResponseEntity<>(status,HttpStatus.OK);
     }
 
