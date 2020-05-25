@@ -2,6 +2,7 @@ package com.shipsgame.domain.entity;
 
 import com.shipsgame.domain.dto.ShipDto;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -16,8 +17,10 @@ public class Games implements Serializable {
 
     private char[] board;
 
+    @Column(length = 10000)
     private ShipDto[] shipsList;
 
+    @Column(length = 10000)
     private int[][] boardNumbers;
 
     public Games(){

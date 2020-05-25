@@ -30,6 +30,9 @@ public class GameController {
     @PostMapping(value = "/getgame", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StatusDto> getUserGame(@RequestParam String user, @RequestParam String pass) {
         final StatusDto statusDto = gameService.getGame(user, pass);
+        if(statusDto == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
 
