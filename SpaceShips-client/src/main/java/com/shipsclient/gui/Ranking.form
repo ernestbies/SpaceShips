@@ -84,8 +84,8 @@
                 </Property>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="2" rowCount="10">
-                    <Column editable="true" title="Player" type="java.lang.Object"/>
-                    <Column editable="true" title="Score" type="java.lang.Object"/>
+                    <Column editable="true" title="Nazwa u&#x17c;ytkownika" type="java.lang.Object"/>
+                    <Column editable="true" title="Wynik" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

@@ -61,7 +61,7 @@ public class Ranking extends javax.swing.JFrame {
                 {null, null}
             },
             new String [] {
-                "Player", "Score"
+                "Nazwa użytkownika", "Wynik"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
