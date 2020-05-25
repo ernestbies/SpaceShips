@@ -49,8 +49,11 @@ public class GameController {
     @PostMapping(value = "/shotgame", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> setShot(@RequestParam String user, @RequestParam String pass, @RequestParam String shot) {
         final StatusDto statusDto = gameService.shotGame(user, pass, shot);
-        if(!shot.matches("\\d\\d")) {
+        if(statusDto == null) {
             return new ResponseEntity<>("Access denied. Invalid login details." ,HttpStatus.UNAUTHORIZED);
+        }
+        if(!shot.matches("\\d\\d")) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(statusDto, HttpStatus.OK);
     }
