@@ -1,6 +1,5 @@
 package com.shipsgame.rest;
 
-import com.shipsgame.domain.dto.ErrorOrder;
 import com.shipsgame.domain.dto.StatusDto;
 import com.shipsgame.service.GameService;
 import org.slf4j.Logger;
