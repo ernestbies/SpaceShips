@@ -72,7 +72,6 @@ public class GameController {
         if(!status) {
             return new ResponseEntity<>("Access denied. Invalid login details.", HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity<>(status,HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
