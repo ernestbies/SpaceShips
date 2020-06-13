@@ -53,7 +53,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public StatusDto newGame(String user, String pass) {
-        if(!loginPlayer(user, pass)) {
+        if(!checkLogin(user, pass)) {
             return null;
         }
         Game newGame = new Game(user);
@@ -69,7 +69,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public StatusDto getGame(String user, String pass) {
-        if(!loginPlayer(user, pass)) {
+        if(!checkLogin(user, pass)) {
             return null;
         }
         Optional<Games> optionalGames = gamesRepository.findById(user);
@@ -88,7 +88,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public StatusDto shotGame(String user, String pass, String shot) {
-        if(!loginPlayer(user, pass)) {
+        if(!checkLogin(user, pass)) {
             return null;
         }
         Game game = loadGame(user);
@@ -122,4 +122,14 @@ public class GameServiceImpl implements GameService {
         return gameMapper.convert(games);
     }
 
+    private boolean checkLogin(String user, String pass) {
+        List<Player> players = playerRepository.findAll();
+
+        for(Player player : players) {
+            if(player.getLogin().equals(user)) {
+                return player.getPassword().equals(pass);
+            }
+        }
+        return false;
+    }
 }

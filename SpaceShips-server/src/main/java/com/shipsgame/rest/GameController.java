@@ -63,19 +63,14 @@ public class GameController {
     @GetMapping(value = "/getrank", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getRank() {
         final String rank = gameService.getRank();
-        if(rank == null || rank.isEmpty()) {
-            return new ResponseEntity<>("Ranking not found.", HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(rank, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> loginPlayer(@RequestParam String user, @RequestParam String pass) {
+    public ResponseEntity<Boolean> loginPlayer(@RequestParam String user, @RequestParam String pass) {
         boolean status = gameService.loginPlayer(user,pass);
-        if(!status) {
-            return new ResponseEntity<>("Access denied. Invalid login details.", HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+        
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }

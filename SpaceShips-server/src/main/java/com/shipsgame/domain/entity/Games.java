@@ -17,10 +17,8 @@ public class Games implements Serializable {
 
     private char[] board;
 
-    @Column(length = 10000)
     private ShipDto[] shipsList;
 
-    @Column(length = 10000)
     private int[][] boardNumbers;
 
     public Games(){
