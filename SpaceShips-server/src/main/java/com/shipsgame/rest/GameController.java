@@ -70,7 +70,7 @@ public class GameController {
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> loginPlayer(@RequestParam String user, @RequestParam String pass) {
         boolean status = gameService.loginPlayer(user,pass);
-        
+
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }

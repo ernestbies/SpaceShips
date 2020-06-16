@@ -323,8 +323,9 @@ public class BoardPanel extends JPanel implements MouseListener {
         jScrollPane3.setBorder(null);
         jScrollPane3.setAutoscrolls(true);
         jScrollPane3.setDoubleBuffered(true);
+        jScrollPane3.setMaximumSize(new java.awt.Dimension(14, 15));
         jScrollPane3.setOpaque(false);
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(736, 85));
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(336, 45));
 
         jTextPane2.setEditable(false);
         jTextPane2.setBackground(new java.awt.Color(153, 153, 153));
@@ -459,7 +460,7 @@ public class BoardPanel extends JPanel implements MouseListener {
         );
 
         jPanel5.setBackground(new java.awt.Color(56, 60, 74));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Logowanie do serwera", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Logowanie do serwera", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
         jPanel5.setForeground(new java.awt.Color(255, 255, 255));
         jPanel5.setFocusTraversalPolicyProvider(true);
 
@@ -666,7 +667,7 @@ public class BoardPanel extends JPanel implements MouseListener {
             final int columnCount = 2;
             final int rowCount = 10;
             String[] ranks = rank.split("\n");
-            String[] columnNames = {"Player","Score"};
+            String[] columnNames = {"Nazwa użytkownika","Wynik"};
         
             Object[][] data = new Object[rowCount][columnCount];
             for(int i=0; i<ranks.length; i++) {
@@ -697,7 +698,7 @@ public class BoardPanel extends JPanel implements MouseListener {
     }//GEN-LAST:event_jPanel1ComponentResized
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        jTextPane2.setEnabled(!jTextPane2.isEnabled());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
