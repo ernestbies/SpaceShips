@@ -63,7 +63,7 @@ public class GameController {
     @GetMapping(value = "/getrank", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getRank() {
         final String rank = gameService.getRank();
-        return new ResponseEntity<>(rank, HttpStatus.OK);
+        return (rank==null || rank.isEmpty()) ? new ResponseEntity<>(rank, HttpStatus.NOT_FOUND) : new ResponseEntity<>(rank, HttpStatus.OK);
     }
 
     @CrossOrigin
@@ -71,6 +71,6 @@ public class GameController {
     public ResponseEntity<Boolean> loginPlayer(@RequestParam String user, @RequestParam String pass) {
         boolean status = gameService.loginPlayer(user,pass);
 
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        return (status) ? new ResponseEntity<>(status, HttpStatus.OK) : new ResponseEntity<>(status, HttpStatus.UNAUTHORIZED);
     }
 }
