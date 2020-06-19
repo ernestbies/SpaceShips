@@ -323,15 +323,14 @@ public class BoardPanel extends JPanel implements MouseListener {
         jScrollPane3.setBorder(null);
         jScrollPane3.setAutoscrolls(true);
         jScrollPane3.setDoubleBuffered(true);
-        jScrollPane3.setMaximumSize(new java.awt.Dimension(14, 15));
         jScrollPane3.setOpaque(false);
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(336, 45));
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(736, 85));
 
         jTextPane2.setEditable(false);
         jTextPane2.setBackground(new java.awt.Color(153, 153, 153));
         jTextPane2.setBorder(null);
         jTextPane2.setContentType("text/html"); // NOI18N
-        jTextPane2.setText("<html>\n<body>\n<font color=\"white\">\n\t<center>ZASADY GRY</center> \n<br> \n\tGra polega na odkrywaniu na planszy poszczególnych pól tak, aby trafić w statek kosmiczny. \n<br>\n\tNa każdym odkrytym polu widnieje liczba, która wskazuje ile bezpośrednio stykających się pól zajmowanych jest przez wrogie statki kosmiczne.\n<br>\n\tZadaniem gracza jest zestrzelenie wszystkich statków znajdujących się na planszy w jak najmniejszej liczbie kroków.\t\t\n<br>\n<br>\n\t<center>LEGENDA\n<br>\n<table>\n<tr>\n\t<td><img src=\"file:images/A.png\" width=10% height=auto/></td>\t<td><font color=\"white\">Szturmowiec</font></td>\t<td><font color=\"white\">1 pole</font></td>\n</tr>\n<tr>\n\t<td><img src=\"file:images/B.png\" width=20% height=auto/></td>\t<td><font color=\"white\">Wahadłowiec</font></td>\t<td><font color=\"white\">2 pola</font></td>\n</tr>\n<tr>\n\t<td><img src=\"file:images/C.png\" width=20% height=auto/></td>\t<td><font color=\"white\">Samolot kosmiczny</font></td>\t<td><font color=\"white\">3 pola</font></td>\n</tr>\n<tr>\n\t<td><img src=\"file:images/D.png\" width=20% height=auto/></td>\t<td><font color=\"white\">Transportowiec</font></td>\t<td><font color=\"white\">4 pola</font></td>\n</tr>\n</font>\n</table></center>\n</body> \n</html>");
+        jTextPane2.setText("<html>\n<body>\n<font color=\"white\">\n\t<center>ZASADY GRY</center> \n<br> \n\tGra polega na odkrywaniu na planszy poszczególnych pól tak, aby trafić w statek kosmiczny. \n<br>\n\tNa każdym odkrytym polu widnieje liczba, która wskazuje ile bezpośrednio stykających się pól zajmowanych jest przez wrogie statki kosmiczne.\n<br>\n\tZadaniem gracza jest zestrzelenie wszystkich statków znajdujących się na planszy w jak najmniejszej liczbie kroków.\t\t\n<br>\n<br>\n\t<center>LEGENDA\n<br>\n<table>\n<tr>\n\t<td><img src=\"file:images/A.png\" width=\"108\" height=\"auto\"></td>\t<td><font color=\"white\">Szturmowiec</font></td>\t<td><font color=\"white\">1 pole</font></td>\n</tr>\n<tr>\n\t<td><img src=\"file:images/B.png\" width=\"108\" height=\"auto\"/></td>\t<td><font color=\"white\">Wahadłowiec</font></td>\t<td><font color=\"white\">2 pola</font></td>\n</tr>\n<tr>\n\t<td><img src=\"file:images/C.png\" width=\"108\" height=\"auto\"/></td>\t<td><font color=\"white\">Samolot kosmiczny</font></td>\t<td><font color=\"white\">3 pola</font></td>\n</tr>\n<tr>\n\t<td><img src=\"file:images/D.png\" width=\"108\" height=\"auto\"/></td>\t<td><font color=\"white\">Transportowiec</font></td>\t<td><font color=\"white\">4 pola</font></td>\n</tr>\n</font>\n</table></center>\n</body> \n</html>");
         jTextPane2.setOpaque(false);
         jScrollPane3.getViewport().setOpaque(false);
         jScrollPane3.setViewportView(jTextPane2);
@@ -698,7 +697,7 @@ public class BoardPanel extends JPanel implements MouseListener {
     }//GEN-LAST:event_jPanel1ComponentResized
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        jTextPane2.setEnabled(!jTextPane2.isEnabled());
+        jScrollPane3.setVisible(!jScrollPane3.isVisible());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
@@ -739,53 +738,73 @@ public class BoardPanel extends JPanel implements MouseListener {
     }//GEN-LAST:event_jButtonLoginActionPerformed
 
     private boolean loginPlayer(String user, String pass) throws RestClientException, HttpClientErrorException {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("user", user);
-        map.add("pass", pass);
-        return restTemplate.postForObject("http://localhost:8080/api/login", new HttpEntity<>(map, headers), Boolean.class);
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("user", user);
+            map.add("pass", pass);
+            return restTemplate.postForObject("http://localhost:8080/api/login", new HttpEntity<>(map, headers), Boolean.class);
+        } catch (Exception e) {
+            return false;
+        }
     } 
     
     //method to send information to server about creating new game
     private Status newGame(String user, String pass) throws RestClientException, HttpClientErrorException {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("user", user);
-        map.add("pass", pass);
-        return restTemplate.postForObject("http://localhost:8080/api/newgame", new HttpEntity<>(map, headers), Status.class);
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("user", user);
+            map.add("pass", pass);
+            return restTemplate.postForObject("http://localhost:8080/api/newgame", new HttpEntity<>(map, headers), Status.class);
+        } catch (Exception e) {
+            return null;
+        }
     }    
 
     //method to send information to server about loading a game
     private Status getGame(String user, String pass) throws RestClientException, HttpClientErrorException {
-        RestTemplate restTemplate = new RestTemplate();        
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("user", user);
-        map.add("pass", pass);
-        return restTemplate.postForObject("http://localhost:8080/api/getgame", new HttpEntity<>(map, headers), Status.class);
+        try {
+            RestTemplate restTemplate = new RestTemplate();        
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("user", user);
+            map.add("pass", pass);
+            return restTemplate.postForObject("http://localhost:8080/api/getgame", new HttpEntity<>(map, headers), Status.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
     
     //method to send information to server about checking position
     private Status shotGame(String user, String pass, String shot) throws RestClientException, HttpClientErrorException {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("user", user);
-        map.add("pass", pass);
-        map.add("shot", shot);
-        return restTemplate.postForObject("http://localhost:8080/api/shotgame", new HttpEntity<>(map, headers), Status.class);       
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("user", user);
+            map.add("pass", pass);
+            map.add("shot", shot);
+            return restTemplate.postForObject("http://localhost:8080/api/shotgame", new HttpEntity<>(map, headers), Status.class);   
+        } catch (Exception e) {
+            return null;
+        }
     }
     
     private String getRank() throws RestClientException, HttpClientErrorException {
-        RestTemplate restTemplate = new RestTemplate();
-        String rank = restTemplate.getForObject("http://localhost:8080/api/getrank", String.class);
-        return rank;        
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String rank = restTemplate.getForObject("http://localhost:8080/api/getrank", String.class);
+            return rank;      
+        } catch (Exception e) {
+            return null;
+        }
     }
     
     //method to MD5 coding passwords
