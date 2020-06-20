@@ -137,9 +137,8 @@ public class BoardPanel extends JPanel implements MouseListener {
                 JOptionPane.showMessageDialog(null, "Utwórz lub wczytaj grę użytkownika!");
             } else {
                 try {
-                    //MD5(Arrays.toString(jPasswordField1.getPassword()))
                     shot = shotGame(username, pass, Integer.toString(x) + Integer.toString(y));
-
+                    if(shot==null) return;
                     jLabelKroki.setText("" + shot.getSteps());
                     board = shot.getBoard();
 
@@ -169,6 +168,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                             StyleConstants.setForeground(style, Color.GREEN);
                             text.insertString(text.getLength(), "KONIEC GRY!!! po " + shot.getSteps() + " krokach \n", style);
                             sound("endgame.wav");
+                            jPanel6.repaint();
                             JOptionPane.showMessageDialog(null,"KONIEC GRY!!!\nPo " + shot.getSteps() + " krokach!");
                             break;
                         case "SHOTDOWN":
@@ -186,10 +186,7 @@ public class BoardPanel extends JPanel implements MouseListener {
                             sound("hit.wav");
                             break;
                     }
-
-                    if (!"ENDGAME".equals(shot.getCode())) {
-                        jPanel6.repaint();
-                    }
+                    jPanel6.repaint();
                 } catch (BadLocationException ex) {
                     Logger.getLogger(ShipsClient.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (HttpClientErrorException ex) {

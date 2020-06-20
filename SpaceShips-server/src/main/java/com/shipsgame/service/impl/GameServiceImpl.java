@@ -88,7 +88,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public StatusDto shotGame(String user, String pass, String shot) {
-        if(!checkLogin(user, pass)) {
+        if(!checkLogin(user, pass) || !Optional.ofNullable(loadGame(user)).isPresent()) {
             return null;
         }
         Game game = loadGame(user);
@@ -118,8 +118,10 @@ public class GameServiceImpl implements GameService {
     }
 
     private Game loadGame(String user) {
-        Games games = gamesRepository.findById(user).orElse(new Games());
-        return gameMapper.convert(games);
+        if(gamesRepository.findById(user).isPresent()) {
+            return gameMapper.convert(gamesRepository.findGamesByLogin(user));
+        }
+        return null;
     }
 
     private boolean checkLogin(String user, String pass) {
