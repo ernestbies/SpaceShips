@@ -12,3 +12,21 @@ Check out all project pages with different game versions:
 3) Mobile version - https://github.com/ernestbies/SpaceShips-mobile
 4) Server (Spring) - https://github.com/ernestbies/SpaceShips-server
 5) Server (Qt) - https://github.com/ernestbies/qt_shipsserver
+
+# Screenshots
+
+1. Game menu
+
+![Screenshot](./screenshots/menu.png)
+
+2. Game
+
+![Screenshot](./screenshots/game.png)
+
+3. Endgame
+
+![Screenshot](./screenshots/endgame.png)
+
+4. Scoreboard
+
+![Screenshot](./screenshots/scoreboard.png)
